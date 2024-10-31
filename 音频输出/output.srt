@@ -1,0 +1,16 @@
+01
+00:00:00,000 --> 00:00:19,957
+一、顺序表的创建线性表的顺序表示和实现结构初始化 InitList(andL)的实现Status InitList下划线Sq( SqListand L ) {，，//构造一个空的线性表，，L点elem等于(ElemType*) malloc (LIST下划线INIT下划线SIZE?
+
+02
+00:00:19,957 --> 00:00:29,210
+sizeof，，(ElemType));，，if (!L点elem) exit(OVERFLOW);，//存储分配失败，，L点length等于零;
+
+03
+00:00:29,210 --> 00:00:38,800
+，，，，，，，，，//空表长度为零，，L点listsize等于LIST下划线INIT下划线SIZE，，//初始存储容量，，return OK;
+
+04
+00:00:38,800 --> 00:00:45,035
+} // InitList下划线Sq算法时间复杂度：O(一)。
+
