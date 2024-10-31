@@ -27,6 +27,14 @@ git clone https://www.modelscope.cn/iic/CosyVoice-300M-Instruct.git pretrained_m
 
 git clone https://www.modelscope.cn/iic/CosyVoice-ttsfrd.git pretrained_models/CosyVoice-ttsfrd
 
+安装好目录格式如下
+pretrained_models
+├── CosyVoice-300M
+├── CosyVoice-300M-Instruct
+├── CosyVoice-300M-SFT
+└── CosyVoice-ttsfrd
+
+
 
 ## 解压缩资源并安装包，以获得更好的文本规范化性能。ttsfrdttsfrd
 
