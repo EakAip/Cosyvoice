@@ -2,7 +2,7 @@
 
 ## 创建 Conda 环境：
 
-'''conda create -n cosyvoice python=3.8'''
+conda create -n cosyvoice python=3.8
 
 conda activate cosyvoice
 
