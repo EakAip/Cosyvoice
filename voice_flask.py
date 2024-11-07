@@ -24,7 +24,6 @@ lock = threading.Lock()
 # 存储训练任务的状态
 training_tasks = {}  # key: voiceid, value: {'status': code, 'remainder': seconds}
 
-
 # 训练处理函数
 def handle_training(voiceid, audio_file_path):
     
