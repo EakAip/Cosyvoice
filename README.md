@@ -2,31 +2,31 @@
 
 ## 创建 Conda 环境：
 
+```python
 conda create -n cosyvoice python=3.8
-
 conda activate cosyvoice
+```
 
+```python
 conda install -y -c conda-forge pynini==2.1.5
-
+```
+```python
 pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
-
+```
+```python
 sudo apt-get install sox libsox-dev
+```
 
 
 ## 模型下载，请确保已安装git lfs
-
+```python
 mkdir -p pretrained_models
-
 git clone https://www.modelscope.cn/iic/CosyVoice-300M.git pretrained_models/CosyVoice-300M
-
 git clone https://www.modelscope.cn/iic/CosyVoice-300M-25Hz.git pretrained_models/CosyVoice-300M-25Hz
-
 git clone https://www.modelscope.cn/iic/CosyVoice-300M-SFT.git pretrained_models/CosyVoice-300M-SFT
-
 git clone https://www.modelscope.cn/iic/CosyVoice-300M-Instruct.git pretrained_models/CosyVoice-300M-Instruct
-
 git clone https://www.modelscope.cn/iic/CosyVoice-ttsfrd.git pretrained_models/CosyVoice-ttsfrd
-
+```
 ## 安装好目录格式如下
 
 pretrained_models
