@@ -1,4 +1,4 @@
-# 接口8001
+# 接口：8001
 
 # 添加MP3转wav模块
 
@@ -55,7 +55,7 @@ def train_voice():
         return jsonify({"code": 5, "msg": "操作失败", "data": {}}), 400
     
     if audio_file.filename.endswith('.mp3'):
-        # 定义 MP3 文件的保存路径
+        # 定义 MP3 文件的保存路径 考虑添加确保uploads目录存在代码
         audio_file_path = os.path.join('uploads', f'{voiceid}.mp3')
         audio_file.save(audio_file_path)
         audio = AudioSegment.from_mp3(audio_file_path)
