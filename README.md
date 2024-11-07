@@ -49,8 +49,9 @@ unzip resource.zip -d .
 pip install ttsfrd-0.3.6-cp38-cp38-linux_x86_64.whl
 ```
 
+## 将 third_party/Matcha-TTS 目录添加到 PYTHONPATH 环境变量中
 ```python
-export PYTHONPATH=third_party/Matcha-TTS  # 将 third_party/Matcha-TTS 目录添加到 PYTHONPATH 环境变量中
+export PYTHONPATH=third_party/Matcha-TTS  
 ```
 
 ## 运行
