@@ -14,6 +14,11 @@ pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --tru
 sudo apt-get install sox libsox-dev  # 安装Sox开原音频处理工具
 ```
 
+```python
+sudo apt update
+sudo apt install ffmpeg
+```
+
 
 ## 模型下载，请确保已安装git lfs
 ```python
@@ -45,6 +50,10 @@ pretrained_models
 cd pretrained_models/CosyVoice-ttsfrd/
 unzip resource.zip -d .
 pip install ttsfrd-0.3.6-cp38-cp38-linux_x86_64.whl
+```
+
+```python
+export PYTHONPATH=third_party/Matcha-TTS
 ```
 
 ## 运行
