@@ -9,14 +9,11 @@ conda activate cosyvoice
 
 # 安装Pynini和python依赖包
 ```python
-conda install -y -c conda-forge pynini==2.1.5 # Pynini 是用于构建加权有限状态机和转录系统的库。
-pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
-sudo apt-get install sox libsox-dev  # 安装Sox开原音频处理工具
-```
-
-```python
 sudo apt update
 sudo apt install ffmpeg
+sudo apt-get install sox libsox-dev  # 安装Sox开原音频处理工具
+conda install -y -c conda-forge pynini==2.1.5 # Pynini 是用于构建加权有限状态机和转录系统的库。
+pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com
 ```
 
 
@@ -53,7 +50,7 @@ pip install ttsfrd-0.3.6-cp38-cp38-linux_x86_64.whl
 ```
 
 ```python
-export PYTHONPATH=third_party/Matcha-TTS
+export PYTHONPATH=third_party/Matcha-TTS  # 将 third_party/Matcha-TTS 目录添加到 PYTHONPATH 环境变量中
 ```
 
 ## 运行
