@@ -52,7 +52,11 @@ def train_voice():
     audio_file = request.files.get('voicefile')
 
     if not voiceid or not audio_file:
-        return jsonify({"code": 5, "msg": "操作失败", "data": {}}), 400
+        return jsonify({"code": 5, "msg": "操作失败", "data": {}}), 200
+
+    # 确保当前目录下uploads目录存在
+    if not os.path.exists('uploads'):
+        os.makedirs('uploads')
     
     if audio_file.filename.endswith('.mp3'):
         # 定义 MP3 文件的保存路径 考虑添加确保uploads目录存在代码
@@ -79,7 +83,7 @@ def train_state():
 
     with lock:
         if voiceid not in training_tasks:
-            return jsonify({"code": 5, "msg": "操作失败", "data": {}}), 400
+            return jsonify({"code": 5, "msg": "操作失败", "data": {}}), 200
 
         task = training_tasks[voiceid]
     return jsonify({"code": task['status'], "msg": "OK", "data": {"voiceid": voiceid, "remainder": task['remainder']}}), 200
