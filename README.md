@@ -17,6 +17,11 @@ sudo apt-get install sox libsox-dev  # 安装Sox开原音频处理工具
 
 ## 模型下载，请确保已安装git lfs
 ```python
+sudo apt update
+sudo apt install git-lfs
+```
+
+```python
 mkdir -p pretrained_models
 git clone https://www.modelscope.cn/iic/CosyVoice-300M.git pretrained_models/CosyVoice-300M
 git clone https://www.modelscope.cn/iic/CosyVoice-300M-25Hz.git pretrained_models/CosyVoice-300M-25Hz
