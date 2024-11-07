@@ -65,7 +65,7 @@ def clone_voice(prompt_wav_upload, spk_name, seed=42, speed=1.0, tts_text="你�
         else:
             return '提示音频为空，请提供提示音频。'
 
-        client = Client("http://188.18.18.106:7998/")
+        client = Client("http://188.18.18.106:7998/")        # 部署时这个位置需要更改为本地机器IP
         result = client.predict(audio_file=file(prompt_wav_upload), hotwords=" ", api_name="/recognize_audio")
 
         # 使用正则表达式过滤speaker后的内容
