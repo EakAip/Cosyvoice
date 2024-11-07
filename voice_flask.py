@@ -54,7 +54,7 @@ def train_voice():
     if not voiceid or not audio_file:
         return jsonify({"code": 5, "msg": "操作失败", "data": {}}), 200
 
-    # 确保当前目录下uploads目录存在
+    # 确保当前目录下uploads文件夹存在
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
     
