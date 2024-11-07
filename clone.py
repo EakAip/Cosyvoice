@@ -30,8 +30,6 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append('{}/third_party/Matcha-TTS'.format(ROOT_DIR))
 
 
-
-
 # 获取已保存的音色列表
 def get_saved_voices():
     voices_dir = os.path.join(ROOT_DIR, 'voices')
