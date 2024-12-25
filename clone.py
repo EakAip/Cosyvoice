@@ -6,6 +6,9 @@
 
 # 增加显存回收处理功能
 
+# cosyvoice = CosyVoice(model_dir='pretrained_models/CosyVoice-300M')
+
+
 import os
 import re
 import gc  # Python垃圾回收模块
@@ -28,6 +31,8 @@ from gradio_client import Client, file
 from pydub import AudioSegment
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append('{}/third_party/Matcha-TTS'.format(ROOT_DIR))
+
+SERVER_ADDRESS = "http://188.18.18.106"
 
 
 # 获取已保存的音色列表
@@ -55,7 +60,14 @@ def postprocess(speech, top_db=60, hop_length=220, win_length=440): # 这段代�
 
 def clone_voice(prompt_wav_upload, spk_name, seed=42, speed=1.0, tts_text="你好,我是你的数字人"):
     try:
-        cosyvoice = CosyVoice(model_dir='pretrained_models/CosyVoice-300M')
+        
+        root_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(root_dir, 'pretrained_models', 'CosyVoice-300M')
+        cosyvoice = CosyVoice(model_dir=model_path)
+        
+        
+        # cosyvoice = CosyVoice(model_dir='pretrained_models/CosyVoice-300M')   # 相对路径 这里不要使用
+
         
         prompt_sr = 16000
         target_sr = 22050
@@ -63,22 +75,29 @@ def clone_voice(prompt_wav_upload, spk_name, seed=42, speed=1.0, tts_text="你�
         if prompt_wav_upload is not None:
             prompt_wav = prompt_wav_upload
         else:
-            return '提示音频为空，请提供提示音频。'
+            return '提示音频为空，请提供提示音频。', None
 
-        client = Client("http://188.18.18.106:7998/")        # 部署时这个位置需要更改为本地机器IP
-        result = client.predict(audio_file=file(prompt_wav_upload), hotwords=" ", api_name="/recognize_audio")
+        client = Client("http://188.18.18.106:7998/")
+        try:
+            result = client.predict(audio_file=file(prompt_wav_upload), hotwords=" ", api_name="/recognize_audio")
+        except Exception as e:
+            print("提示音频识别失败，请提供可识别的音频。")
+            return '提示音频识别失败，请提供可识别的音频。', None
 
         # 使用正则表达式过滤speaker后的内容
         prompt_text = re.sub(r'.*speaker\d+:\s*', '', result[0])
         print(prompt_text)
 
         if prompt_text == '':
-            return '提示文本为空，请输入提示文本。'
+            print("提示文本为空，请输入提示文本。")
+            return '提示文本为空，请输入提示文本。', None
 
         if torchaudio.info(prompt_wav).sample_rate < prompt_sr:
-            return '提示音频采样率过低，请提供采样率不低于16kHz的音频'
+            print("提示音频采样率过低，请提供采样率不低于16kHz的音频")
+            return '提示音频采样率过低，请提供采样率不低于16kHz的音频', None
 
         logging.info('开始克隆声音并合成语音...')
+        print("开始克隆声音并合成语音...")
         prompt_speech_16k = postprocess(load_wav(prompt_wav, prompt_sr))
         set_all_random_seed(seed)
 
@@ -95,6 +114,7 @@ def clone_voice(prompt_wav_upload, spk_name, seed=42, speed=1.0, tts_text="你�
         del cosyvoice, tts_speeches, prompt_speech_16k  # 删除不再使用的对象
         torch.cuda.empty_cache()  # 清理未使用的显存
         gc.collect()  # 进行垃圾回收
+        print("训练完成")
 
         return '训练完成', (target_sr, audio_data.numpy().flatten())
 
@@ -105,88 +125,8 @@ def clone_voice(prompt_wav_upload, spk_name, seed=42, speed=1.0, tts_text="你�
         torch.cuda.empty_cache()
         gc.collect()
 
-        return '操作失败，请检查日志以获取详细信息。'
+        return str(e), None
 
-
-
-
-
-# def clone_voice(prompt_wav_upload, spk_name,seed=42, speed=1.0, tts_text="你好,我是你的数字人"):
-#     cosyvoice = CosyVoice(model_dir='pretrained_models/CosyVoice-300M')
-
-#     prompt_sr = 16000
-#     target_sr = 22050
-#     if prompt_wav_upload is not None:
-#         prompt_wav = prompt_wav_upload
-#     else:
-#         return '提示音频为空，请提供提示音频。'
-    
-#     client = Client("http://188.18.18.106:7998/")
-#     result = client.predict(audio_file=file(prompt_wav_upload),hotwords=" ",api_name="/recognize_audio")
-#     # prompt_text = re.sub(r'.*speaker0:', '', result[0])         # 使用正则，result只保留speaker0:之后的内容。
-#     prompt_text = re.sub(r'.*speaker\d+:\s*', '', result[0])         # 使用正则，result只保留speaker_:之后的内容。
-#     print(prompt_text)
-
-#     if prompt_text == '':
-#         return '提示文本为空，请输入提示文本。'
-
-#     if torchaudio.info(prompt_wav).sample_rate < prompt_sr:
-#         return '提示音频采样率过低，请提供采样率不低于16kHz的音频'
-
-#     logging.info('开始克隆声音并合成语音...')
-#     prompt_speech_16k = postprocess(load_wav(prompt_wav, prompt_sr))
-#     set_all_random_seed(seed)
-
-#     # 克隆声音并保存音色
-#     tts_speeches = []
-#     for i in cosyvoice.inference_zero_shot(tts_text, prompt_text, prompt_speech_16k, spk_name=spk_name,stream=False, speed=speed):
-#         tts_speeches.append(i['tts_speech'])
-#     # audio_data未保存
-#     audio_data = torch.concat(tts_speeches, dim=1)
-#     return '训练完成',(target_sr, audio_data.numpy().flatten()) 
-
-
-
-# def infer(tts_text, spk_name, seed=42, speed=0.9):
-    try:
-        if not os.path.exists(os.path.join(ROOT_DIR, 'voices', f'{spk_name}.pt')):
-            return False
-        
-        cosyvoice = CosyVoice(model_dir='pretrained_models/CosyVoice-300M')
-        target_sr = 22050
-        set_all_random_seed(seed)
-        
-        # 使用已保存的音色进行推理
-        tts_speeches = []
-        for i in cosyvoice.inference_sft(tts_text, spk_id='中文女', stream=False, speed=speed, new_dropdown=spk_name):
-            print(f"轮次：{i}")
-            tts_speeches.append(i['tts_speech'])
-
-        # 将所有生成的语音片段拼接在一起
-        audio_data = torch.concat(tts_speeches, dim=1)
-        
-        # 确保 audio 目录存在
-        audio_dir = os.path.join('static', 'audio')  # 假设音频存储在 static/audio 目录
-        if not os.path.exists(audio_dir):
-            os.makedirs(audio_dir)
-        
-        # 生成唯一的音频文件名
-        output_filename = f'{uuid.uuid4()}.wav'
-        output_path = os.path.join(audio_dir, output_filename)
-        
-        # 使用 torchaudio 保存音频为 .wav 文件
-        torchaudio.save(output_path, audio_data, target_sr)
-        
-        print(f"音频文件已保存到 {output_path}")
-        
-        # 返回完整的音频文件 URL
-        base_url = request.url_root.rstrip('/')  # 获取当前服务的基础 URL
-        full_audio_url = base_url + "/sound_clone"+ url_for('static', filename=os.path.join('audio', output_filename))
-        
-        return full_audio_url
-    except Exception as e:
-        print(f"推理错误: {e}")
-        return False
 
 
 
@@ -195,7 +135,9 @@ def infer(tts_text, spk_name, seed=42, speed=0.9):
         if not os.path.exists(os.path.join(ROOT_DIR, 'voices', f'{spk_name}.pt')):
             return False
 
-        cosyvoice = CosyVoice(model_dir='pretrained_models/CosyVoice-300M')
+
+        cosyvoice = CosyVoice(model_dir=os.path.join(ROOT_DIR, 'pretrained_models/CosyVoice-300M'))
+
         target_sr = 22050
         set_all_random_seed(seed)
 
@@ -226,10 +168,20 @@ def infer(tts_text, spk_name, seed=42, speed=0.9):
         torch.cuda.empty_cache()  # 清理未使用的显存
         gc.collect()  # 强制进行垃圾回收
 
-        # 返回完整的音频文件 URL
-        base_url = request.url_root.rstrip('/')
-        full_audio_url = base_url + "/sound_clone" + url_for('static', filename=os.path.join('audio', output_filename))
 
+        base_url = SERVER_ADDRESS
+        full_audio_url = base_url + "/sound_clone/" + output_path
+
+        # print("*******************************")
+        # 返回完整的音频文件 URL
+        # base_url = request.url_root.rstrip('/')
+        # full_audio_url = base_url + "/sound_clone/" + url_for('static', filename=os.path.join('audio', output_filename))
+        
+        # print(f"base_url:{base_url}")
+        
+        print(f"vioceid：{spk_name}推理音频路径:{full_audio_url}")
+        
+        
         return full_audio_url
 
     except Exception as e:
