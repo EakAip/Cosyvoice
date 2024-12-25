@@ -2,6 +2,12 @@
 
 ## 创建 Conda 环境：
 
+### 添加训练排队位置 剩余时间显示
+
+### 优化队列问题
+
+### 返回报错状态
+
 ```python
 conda create -n cosyvoice python=3.8
 conda activate cosyvoice
